@@ -1,13 +1,25 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+import os
 import re
+import json
 import joblib
+import numpy as np
 from pathlib import Path
 from scipy.sparse import csr_matrix, hstack
-import numpy as np
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+
+# Download NLTK data
+nltk.data.path.append('/tmp/nltk_data')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords', download_dir='/tmp/nltk_data')
+
+# Set NLTK data path
+nltk.data.path.append('/tmp/nltk_data')
 
 app = Flask(__name__)
 

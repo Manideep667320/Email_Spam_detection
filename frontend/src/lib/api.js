@@ -1,15 +1,47 @@
 import axios from 'axios';
 
-// Use Vercel's environment variable in production, or relative path in development
-const baseURL = import.meta.env.PROD 
-  ? `${window.location.origin}/api`  // Will use the current domain in production
-  : '/api';
+// Determine the base URL based on the environment
+const getBaseURL = () => {
+  // In production, use the current domain
+  if (import.meta.env.PROD) {
+    return `${window.location.origin}/api`;
+  }
+  // In development, use the proxy defined in vite.config.js
+  return '/api';
+};
 
 const api = axios.create({
-  baseURL,
+  baseURL: getBaseURL(),
   headers: { 'Content-Type': 'application/json' },
-  timeout: 10000,
+  timeout: 15000, // Increased timeout for serverless functions
 });
+
+// Add request interceptor to log requests
+api.interceptors.request.use(
+  (config) => {
+    console.log('Making request to:', config.url);
+    return config;
+  },
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      console.error('Response error:', error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error('No response received:', error.request);
+    } else {
+      console.error('Error:', error.message);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export async function predictSpam(email) {
   try {
