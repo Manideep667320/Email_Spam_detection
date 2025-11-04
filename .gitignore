@@ -43,7 +43,10 @@ models/.DS_Store
 # Dataset files
 dataset/
 *.csv
-*.json
+# Allow vercel.json
+!vercel.json
+
+# Other JSON files
 *.xlsx
 *.db
 *.sqlite3
