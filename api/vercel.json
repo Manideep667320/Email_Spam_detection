@@ -5,7 +5,7 @@
       "src": "index.py",
       "use": "@vercel/python",
       "config": {
-        "pythonVersion": "3.9",
+        "pythonVersion": "3.12",
         "maxLambdaSize": "15mb"
       }
     }
@@ -15,16 +15,5 @@
       "src": "/(.*)",
       "dest": "/index.py"
     }
-  ],
-  "build": {
-    "env": {
-      "PYTHON_VERSION": "3.9"
-    },
-    "use": "@vercel/static-build",
-    "config": {
-      "distDir": ".",
-      "zeroConfig": true
-    }
-  },
-  "buildCommand": "chmod +x ./build.sh && ./build.sh"
+  ]
 }
