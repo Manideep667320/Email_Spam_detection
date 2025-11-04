@@ -10,8 +10,11 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# System libraries
 lib64/
+
+# Allow frontend source lib directory
+!frontend/src/lib/
 parts/
 sdist/
 var/
