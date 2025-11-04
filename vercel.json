@@ -24,6 +24,14 @@
     {
       "src": "/(.*)",
       "dest": "/frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
     }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/(.*)", "destination": "/frontend/index.html" }
   ]
 }
