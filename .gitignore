@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Model artifacts
+# Keep .joblib files but ignore temporary/backup files
+models/*.joblib~
+models/*.tmp
+models/temp_*
+models/.DS_Store
+
+# Other model formats (not used in this project)
+*.pkl
+*.h5
+*.hdf5
+*.model
+
+# Dataset files
+dataset/
+*.csv
+*.json
+*.xlsx
+*.db
+*.sqlite3
+
+# Node.js
+dist/
+dist-ssr/
+*.local
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+results.json
+*.log
+
+# Build output
+frontend/dist/
+frontend/.svelte-kit/
+frontend/build/
+
+# Local development
+.cache/
+coverage/
