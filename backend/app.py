@@ -3,6 +3,7 @@ import re
 import json
 import joblib
 import numpy as np
+import logging
 from pathlib import Path
 from scipy.sparse import csr_matrix, hstack
 from flask import Flask, request, jsonify
@@ -11,15 +12,34 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
-# Download NLTK data
-nltk.data.path.append('/tmp/nltk_data')
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords', download_dir='/tmp/nltk_data')
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Set NLTK data path
-nltk.data.path.append('/tmp/nltk_data')
+try:
+    # Try to use the temporary directory in Vercel's serverless environment
+    nltk_data_path = '/tmp/nltk_data'
+    os.makedirs(nltk_data_path, exist_ok=True)
+    nltk.data.path.append(nltk_data_path)
+    
+    # Download NLTK data if not present
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        logger.info("Downloading NLTK stopwords...")
+        nltk.download('stopwords', download_dir=nltk_data_path)
+        logger.info("NLTK stopwords downloaded successfully")
+    
+    # Verify NLTK data is accessible
+    nltk.data.find('corpora/stopwords')
+    logger.info("NLTK data is ready")
+    
+except Exception as e:
+    logger.error(f"Error initializing NLTK: {str(e)}")
+    # Fallback to default NLTK data path if there's an issue
+    nltk.download('stopwords')
+    logger.info("Falling back to default NLTK data path")
 
 app = Flask(__name__)
 
