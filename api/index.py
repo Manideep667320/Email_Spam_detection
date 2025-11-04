@@ -3,7 +3,12 @@
 
 import sys
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Add the parent directory to the path so we can import from backend
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -19,12 +24,7 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
     return response
 
-# This is needed for Vercel to properly import your Flask app
-# The actual app is imported from backend/app.py
-
-# If you need to initialize anything specific for the Vercel environment,
-# you can do it here.
-# For example, you might want to ensure NLTK data is downloaded:
+# Initialize NLTK data only once when the module loads
 try:
     import nltk
     nltk_data_path = '/tmp/nltk_data'
@@ -34,21 +34,49 @@ try:
     # Download NLTK data if not present
     try:
         nltk.data.find('corpora/stopwords')
+        logger.info("NLTK stopwords already downloaded")
     except LookupError:
-        print("Downloading NLTK stopwords...")
+        logger.info("Downloading NLTK stopwords...")
         nltk.download('stopwords', download_dir=nltk_data_path)
-        print("NLTK stopwords downloaded successfully")
+        logger.info("NLTK stopwords downloaded successfully")
     
 except Exception as e:
-    print(f"Error initializing NLTK: {str(e)}")
-    # Fallback to default NLTK data path if there's an issue
+    logger.error(f"Error initializing NLTK: {str(e)}")
     try:
         nltk.download('stopwords')
-        print("Falling back to default NLTK data path")
+        logger.info("Falling back to default NLTK data path")
     except Exception as e:
-        print(f"Failed to download NLTK data: {str(e)}")
+        logger.error(f"Failed to download NLTK data: {str(e)}")
 
-# Add a simple health check endpoint
-@application.route('/api/health')
+# Health check endpoint
+@application.route('/api/health', methods=['GET'])
 def health_check():
-    return jsonify({"status": "ok", "message": "API is running"}), 200
+    return jsonify({
+        "status": "ok",
+        "message": "API is running",
+        "python_version": sys.version,
+        "nltk_data_path": nltk.data.path if 'nltk' in globals() else 'nltk not available'
+    }), 200
+
+# Add a simple request logger
+@application.before_request
+def log_request_info():
+    logger.info(f"Request: {request.method} {request.path}")
+    if request.method == 'POST':
+        logger.info(f"Request body: {request.get_json(silent=True) or {}}")
+
+# Ensure all routes are prefixed with /api
+@application.route('/')
+def api_redirect():
+    return jsonify({
+        "status": "ok",
+        "message": "Please use /api/ endpoints",
+        "endpoints": [
+            "GET /api/health",
+            "POST /api/predict",
+            "GET /api/metrics"
+        ]
+    }), 200
+
+# This is needed for Vercel
+app = application
