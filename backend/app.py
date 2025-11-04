@@ -10,7 +10,21 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
 app = Flask(__name__)
-CORS(app)
+
+# Configure CORS to work with Vercel deployment
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "http://localhost:5173",  # Local development
+                "https://*.vercel.app"    # All Vercel deployments
+            ],
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type"]
+        }
+    }
+)
 
 # Load trained artifacts
 MODELS_DIR = Path(__file__).resolve().parents[1] / 'models'

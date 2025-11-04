@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "dev": "concurrently \"vite\" \"npm run serve-backend\"",
-  "serve-backend": "python ..\\backend\\app.py",
-  "build": "vite build",
-  "lint": "eslint .",
-  "preview": "vite preview"
-},
+    "dev": "vite",
+    "serve-backend": "python ..\\backend\\app.py",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "vercel-build": "npm install && npm run build"
+  },
   "dependencies": {
     "axios": "^1.7.7",
     "concurrently": "^9.1.2",

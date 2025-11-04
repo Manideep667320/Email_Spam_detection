@@ -5,12 +5,22 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "dist",
+        "cleanUrls": true
       }
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ]
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "status": 200
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
