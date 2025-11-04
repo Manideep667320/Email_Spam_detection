@@ -2,18 +2,16 @@ import axios from 'axios';
 
 // Determine the base URL based on the environment
 const getBaseURL = () => {
-  // In production, use the current domain
   if (import.meta.env.PROD) {
-    return `${window.location.origin}/api`;
+    return window.location.origin;
   }
-  // In development, use the proxy defined in vite.config.js
-  return '/api';
+  return '';
 };
 
 const api = axios.create({
   baseURL: getBaseURL(),
   headers: { 'Content-Type': 'application/json' },
-  timeout: 15000, // Increased timeout for serverless functions
+  timeout: 15000,
 });
 
 // Add request interceptor to log requests

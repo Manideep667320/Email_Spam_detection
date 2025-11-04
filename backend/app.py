@@ -150,6 +150,9 @@ def metrics():
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": f"Failed to read metrics: {e}"}), 500
-
+# Make sure this is at the bottom of app.py
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+else:
+    # This is needed for Vercel
+    application = app
